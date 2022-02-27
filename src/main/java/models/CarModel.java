@@ -11,9 +11,17 @@ public class CarModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private CarBrand carBrand;
 
-    public CarModel(String name) {
+    public CarBrand getCarBrand() {
+        return carBrand;
+    }
+
+    public CarModel(String name, CarBrand carBrand) {
         this.name = name;
+        this.carBrand = carBrand;
     }
 
     public CarModel() {
@@ -28,14 +36,15 @@ public class CarModel {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CarModel carModels = (CarModel) o;
-        return id == carModels.id && Objects.equals(name, carModels.name);
+        CarModel carModel = (CarModel) o;
+        return id == carModel.id && Objects.equals(name, carModel.name) && Objects.equals(carBrand, carModel.carBrand);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, carBrand);
     }
+
 
     public int getId() {
         return id;
@@ -53,11 +62,17 @@ public class CarModel {
         this.name = name;
     }
 
+
+
+    public void setCarBrand(CarBrand carBrand) {
+        this.carBrand = carBrand;
+    }
+
     @Override
     public String toString() {
-        return "CarModels{"
-                + "id=" + id
-                + ", name='" + name + '\''
+        return "CarModel{"
+                + "name='" + name + '\''
+                + ", carBrand=" + carBrand.getName()
                 + '}';
     }
 }

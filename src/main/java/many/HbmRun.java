@@ -10,11 +10,14 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HbmRun {
 
     public static void main(String[] args) {
         HbmRun hbmRun = new HbmRun();
-        hbmRun.runManyToMany();
+        hbmRun.runOneToMany();
     }
 
     private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
@@ -22,19 +25,19 @@ public class HbmRun {
     private SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 
     public void runOneToMany() {
+        List<CarBrand> list = new ArrayList<>();
+        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure().build();
         try {
+            SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
             Session session = sf.openSession();
             session.beginTransaction();
-
-            CarBrand brand = new CarBrand("BMW");
-            brand.addCar(new CarModel("X5"));
-            brand.addCar(new CarModel("X3"));
-            brand.addCar(new CarModel("M1"));
-            brand.addCar(new CarModel("X1"));
-            brand.addCar(new CarModel("GT7"));
-
-            session.save(brand);
-
+            list = session.createQuery("from CarBrand").list();
+            for (CarBrand carBrand : list) {
+                for (CarModel carModel : carBrand.getCars()) {
+                    System.out.println(carModel);
+                }
+            }
             session.getTransaction().commit();
             session.close();
         }  catch (Exception e) {
