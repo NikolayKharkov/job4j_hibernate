@@ -1,33 +1,146 @@
 package many;
 
-import models.Author;
-import models.Book;
-import models.CarBrand;
-import models.CarModel;
+import models.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class HbmRun {
 
     public static void main(String[] args) {
         HbmRun hbmRun = new HbmRun();
-        hbmRun.runOneToMany();
+        hbmRun.updateCandidateNameById(2, 4);
     }
 
     private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
             .configure().build();
     private SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 
+
+    public void saveCandidateRun() {
+        try {
+            SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+            Session session = sf.openSession();
+            session.beginTransaction();
+
+            Candidate candidate1 = Candidate.of("Mikhail", 2, 55_000);
+            Candidate candidate2 = Candidate.of("Kate", 3, 75_000);
+            Candidate candidate3 = Candidate.of("Bob", 1, 30_000);
+            session.save(candidate1);
+            session.save(candidate2);
+            session.save(candidate3);
+
+            session.getTransaction().commit();
+            session.close();
+        }  catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
+    }
+
+    public void getAllCandidatesRun() {
+        try {
+            SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+            Session session = sf.openSession();
+            session.beginTransaction();
+            for (Object candidate : session.createQuery("from Candidate").list()) {
+                System.out.println(candidate);
+            }
+            session.getTransaction().commit();
+            session.close();
+        }  catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
+    }
+
+    public void getCandidateByIdRun(int id) {
+        try {
+            SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+            Session session = sf.openSession();
+            session.beginTransaction();
+
+            Query query = session.createQuery("from Candidate c where c.id = :id");
+            query.setParameter("id", id);
+            System.out.println(query.uniqueResult());
+
+            session.getTransaction().commit();
+            session.close();
+        }  catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
+    }
+
+    public void getCandidateByNameRun(String name) {
+        try {
+            SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+            Session session = sf.openSession();
+            session.beginTransaction();
+
+            Query query = session.createQuery("from Candidate c where lower(c.name) = lower(:name)");
+            query.setParameter("name", name);
+            System.out.println(query.uniqueResult());
+
+            session.getTransaction().commit();
+            session.close();
+        }  catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
+    }
+    public void deleteCandidateByIdRun(int id) {
+        try {
+            SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+            Session session = sf.openSession();
+            session.beginTransaction();
+
+            session.createQuery("delete Candidate c where c.id = :id")
+                    .setParameter("id", id)
+                    .executeUpdate();
+
+            session.getTransaction().commit();
+            session.close();
+        }  catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
+    }
+
+    public void updateCandidateNameById(int id, int experience) {
+        try {
+            SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+            Session session = sf.openSession();
+            session.beginTransaction();
+
+            session.createQuery("update Candidate c set c.experience = :experience where c.id = :id")
+                    .setParameter("experience", experience)
+                    .setParameter("id", id)
+                    .executeUpdate();
+
+            session.getTransaction().commit();
+            session.close();
+        }  catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
+    }
+
     public void runOneToMany() {
         List<CarBrand> list = new ArrayList<>();
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure().build();
         try {
             SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
             Session session = sf.openSession();

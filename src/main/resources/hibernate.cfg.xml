@@ -21,6 +21,7 @@
         <mapping class="models.CarBrand"/>
         <mapping class="models.Author"/>
         <mapping class="models.Book"/>
+        <mapping class="models.Candidate"/>
 
     </session-factory>
 </hibernate-configuration>
