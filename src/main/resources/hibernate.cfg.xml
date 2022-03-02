@@ -22,6 +22,8 @@
         <mapping class="models.Author"/>
         <mapping class="models.Book"/>
         <mapping class="models.Candidate"/>
+        <mapping class="models.Vacancy"/>
+        <mapping class="models.BaseVacancy"/>
 
     </session-factory>
 </hibernate-configuration>

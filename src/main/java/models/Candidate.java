@@ -16,6 +16,9 @@ public class Candidate {
 
     private int salary;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private BaseVacancy baseVacancy;
+
     public static Candidate of(String name, int experience, int salary) {
         Candidate result = new Candidate();
         result.name = name;
@@ -76,5 +79,13 @@ public class Candidate {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, experience, salary);
+    }
+
+    public BaseVacancy getBaseVacancy() {
+        return baseVacancy;
+    }
+
+    public void setBaseVacancy(BaseVacancy baseVacancy) {
+        this.baseVacancy = baseVacancy;
     }
 }
