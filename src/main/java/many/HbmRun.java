@@ -16,7 +16,7 @@ public class HbmRun {
 
     public static void main(String[] args) {
         HbmRun hbmRun = new HbmRun();
-        hbmRun.updateCandidateNameById(2, 4);
+        hbmRun.getCandidateByNameRun("kate");
     }
 
     private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
@@ -90,7 +90,10 @@ public class HbmRun {
 
             Query query = session.createQuery("from Candidate c where lower(c.name) = lower(:name)");
             query.setParameter("name", name);
-            System.out.println(query.uniqueResult());
+
+            for (Object candidate : query.list()) {
+                System.out.println(candidate);
+            }
 
             session.getTransaction().commit();
             session.close();
